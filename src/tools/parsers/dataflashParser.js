@@ -578,13 +578,12 @@ export class DataflashParser {
     fixDataOnce (name) {
         if (['GPS', 'ATT', 'AHR2', 'MODE'].indexOf(name) === -1) {
             if (this.messageTypes.hasOwnProperty(name)) {
-                let fields = this.messages[name][0].fieldnames
+                let fields = this.messageTypes[name].complexFields
                 if (this.messageTypes[name].hasOwnProperty('multipliers')) {
-                    for (let message in this.messages[name]) {
-                        for (let i = 1; i < fields.length; i++) {
-                            let fieldname = fields[i]
-                            if (!isNaN(this.messageTypes[name].multipliers[i])) {
-                                this.messages[name][message][fieldname] *= this.messageTypes[name].multipliers[i]
+                    for (let [fieldname, field] of Object.entries(fields)) {
+                        if (!isNaN(field.multiplier) && field.multiplier !== 0) {
+                            for (let i = 0; i < this.messages[name].length; i++) {
+                                this.messages[name][i][fieldname] *= field.multiplier
                             }
                         }
                     }
@@ -683,7 +682,7 @@ export class DataflashParser {
                             messageTypes[msg.Name + '[' + instance + ']'] = {
                                 expressions: fields,
                                 units: msg.units,
-                                multipiers: msg.multipliers,
+                                multipliers: msg.multipliers,
                                 complexFields: complexFields
                             }
                         }
@@ -691,7 +690,7 @@ export class DataflashParser {
                         messageTypes[msg.Name] = {
                             expressions: fields,
                             units: msg.units,
-                            multipiers: msg.multipliers,
+                            multipliers: msg.multipliers,
                             complexFields: complexFields
                         }
                     }
