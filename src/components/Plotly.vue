@@ -636,7 +636,7 @@ export default {
                 datasets.push({
                     name: expression.name,
                     // type: 'scattergl',
-                    mode: 'lines',
+                    mode: 'lines+markers',
                     x: data.x,
                     y: data.y,
                     yaxis: 'y' + (expression.axis + 1),
@@ -645,8 +645,13 @@ export default {
                         width: 1.5
                     },
                     marker: {
-                        size: 4,
-                        color: expression.color
+                        size: 5,
+                        symbol: 'cross-thin',
+                        color: expression.color,
+                        line: {
+                            color: expression.color,
+                            width: 1
+                        }
                     }
                 })
                 let axisname = expression.axis > 0 ? ('yaxis' + (expression.axis + 1)) : 'yaxis'
@@ -673,7 +678,7 @@ export default {
             plotOptions.xaxis = {
                 rangeslider: {},
                 domain: this.calculateXAxisDomain(),
-                title: 'time_boot (ms)',
+                title: ' ',
                 tickformat: ':04,2f'
             }
             if (this.plotInstance !== null) {
